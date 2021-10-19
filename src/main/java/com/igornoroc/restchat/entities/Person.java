@@ -1,9 +1,11 @@
 package com.igornoroc.restchat.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 @Entity
@@ -15,8 +17,12 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @NotBlank(message = "username must be not empty")
     @Column(unique = true)
     private String username;
+
+    @NotBlank(message = "password must be not empty")
     private String password;
 
     public Person() {
