@@ -1,18 +1,14 @@
 package com.igornoroc.restchat.entities;
 
-import lombok.*;
+import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "roles")
-@Getter
-@Setter
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-public class Role {
+@Data
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -20,15 +16,7 @@ public class Role {
     private String role;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role1 = (Role) o;
-        return id == role1.id && Objects.equals(role, role1.role);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, role);
+    public String getAuthority() {
+        return role;
     }
 }

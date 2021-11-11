@@ -1,6 +1,7 @@
 package com.igornoroc.restchat.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +16,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class ExceptionHandlers {
-    private ObjectMapper objectMapper;
-
-    public ExceptionHandlers(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    private final ObjectMapper objectMapper;
 
     @ExceptionHandler(value = {DataIntegrityViolationException.class})
     public void exceptionHandler(Exception e, HttpServletResponse response) throws IOException {

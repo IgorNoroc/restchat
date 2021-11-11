@@ -2,10 +2,13 @@ package com.igornoroc.restchat.config.security;
 
 import com.igornoroc.restchat.config.jwt.JWTAuthenticationFilter;
 import com.igornoroc.restchat.config.jwt.JWTAuthorizationFilter;
-import com.igornoroc.restchat.service.impl.UserDetailsServiceImpl;
+import com.igornoroc.restchat.service.PersonService;
+import com.igornoroc.restchat.service.impl.PersonServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,14 +21,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import static com.igornoroc.restchat.config.jwt.JWTAuthenticationFilter.SIGN_UP_URL;
 
 @EnableWebSecurity
+@RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
-    private UserDetailsServiceImpl userDetailsService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    public SecurityWebConfig(UserDetailsServiceImpl userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.userDetailsService = userDetailsService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
+    private final PersonServiceImpl personDetailsService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PersonService personService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -34,17 +35,16 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-                .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), personService))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+        auth.userDetailsService(personDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 
     @Bean

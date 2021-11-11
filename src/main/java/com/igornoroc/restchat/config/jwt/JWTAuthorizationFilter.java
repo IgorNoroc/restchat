@@ -2,6 +2,9 @@ package com.igornoroc.restchat.config.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.igornoroc.restchat.entities.Person;
+import com.igornoroc.restchat.service.PersonService;
+import lombok.Getter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,19 +14,22 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static com.igornoroc.restchat.config.jwt.JWTAuthenticationFilter.*;
 
-
+@Getter
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+    private final PersonService personService;
 
-    public JWTAuthorizationFilter(AuthenticationManager authManager) {
-        super(authManager);
+    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, PersonService personService) {
+        super(authenticationManager);
+        this.personService = personService;
     }
 
     @Override
+    @Transactional
     protected void doFilterInternal(HttpServletRequest req,
                                     HttpServletResponse res,
                                     FilterChain chain) throws IOException, ServletException {
@@ -43,13 +49,13 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
-            String user = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+            String username = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
                     .build()
                     .verify(token.replace(TOKEN_PREFIX, ""))
                     .getSubject();
-
-            if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+            if (username != null) {
+                Person person = personService.findByName(username);
+                return new UsernamePasswordAuthenticationToken(person.getUsername(), null, person.getRoles());
             }
             return null;
         }

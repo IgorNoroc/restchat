@@ -6,7 +6,7 @@ public interface RoleService {
 
     Role save(Role role);
 
-    Role findRoleById(long id);
+    Role findById(long id);
 
     void delete(Role role);
 

@@ -3,21 +3,19 @@ package com.igornoroc.restchat.service.impl;
 import com.igornoroc.restchat.entities.Role;
 import com.igornoroc.restchat.repositories.RoleRepo;
 import com.igornoroc.restchat.service.RoleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
     private final RoleRepo roleRepo;
-
-    public RoleServiceImpl(RoleRepo roleRepo) {
-        this.roleRepo = roleRepo;
-    }
 
     public Role save(Role role) {
         return roleRepo.save(role);
     }
 
-    public Role findRoleById(long id) {
+    public Role findById(long id) {
         return roleRepo.findById(id).orElse(null);
     }
 
