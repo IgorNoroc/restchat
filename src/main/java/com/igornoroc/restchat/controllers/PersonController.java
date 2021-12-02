@@ -1,8 +1,8 @@
 package com.igornoroc.restchat.controllers;
 
 import com.igornoroc.restchat.entities.Person;
-import com.igornoroc.restchat.service.impl.PersonServiceImpl;
-import com.igornoroc.restchat.service.impl.RoleServiceImpl;
+import com.igornoroc.restchat.service.PersonService;
+import com.igornoroc.restchat.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,8 +16,8 @@ import java.util.Collection;
 public class PersonController {
     @Value("${ADMIN_ROLE_ID}")
     private long ADMIN_ROLE_ID;
-    private final PersonServiceImpl personService;
-    private final RoleServiceImpl roleService;
+    private final PersonService personService;
+    private final RoleService roleService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")

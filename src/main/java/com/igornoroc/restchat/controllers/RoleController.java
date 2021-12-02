@@ -1,7 +1,7 @@
 package com.igornoroc.restchat.controllers;
 
 import com.igornoroc.restchat.entities.Role;
-import com.igornoroc.restchat.service.impl.RoleServiceImpl;
+import com.igornoroc.restchat.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/role")
 @RequiredArgsConstructor
 public class RoleController {
-    private final RoleServiceImpl roleService;
+    private final RoleService roleService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")

@@ -3,7 +3,6 @@ package com.igornoroc.restchat.config.security;
 import com.igornoroc.restchat.config.jwt.JWTAuthenticationFilter;
 import com.igornoroc.restchat.config.jwt.JWTAuthorizationFilter;
 import com.igornoroc.restchat.service.PersonService;
-import com.igornoroc.restchat.service.impl.PersonServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -24,9 +23,8 @@ import static com.igornoroc.restchat.config.jwt.JWTAuthenticationFilter.SIGN_UP_
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
-    private final PersonServiceImpl personDetailsService;
+    private final PersonService personDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final PersonService personService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -38,7 +36,7 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager(), personService))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 

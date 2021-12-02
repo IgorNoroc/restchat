@@ -2,11 +2,11 @@ package com.igornoroc.restchat.config.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.igornoroc.restchat.entities.Person;
-import com.igornoroc.restchat.service.PersonService;
 import lombok.Getter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -16,16 +16,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.igornoroc.restchat.config.jwt.JWTAuthenticationFilter.*;
 
 @Getter
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-    private final PersonService personService;
 
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, PersonService personService) {
+    public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-        this.personService = personService;
     }
 
     @Override
@@ -49,16 +50,31 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
-            String username = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
-                    .getSubject();
+            String username = getSubjectFromToken(token);
             if (username != null) {
-                Person person = personService.findByName(username);
-                return new UsernamePasswordAuthenticationToken(person.getUsername(), null, person.getRoles());
+                return new UsernamePasswordAuthenticationToken(username, null, getAuthoritiesFromToken(token));
             }
             return null;
         }
         return null;
+    }
+
+    private String getSubjectFromToken(String token) {
+        return JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+                .build()
+                .verify(token.replace(TOKEN_PREFIX, ""))
+                .getSubject();
+    }
+
+    private Collection<GrantedAuthority> getAuthoritiesFromToken(String token) {
+        List<String> authorities = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+                .build()
+                .verify(token.replace(TOKEN_PREFIX, ""))
+                .getClaim("authorities")
+                .asList(String.class);
+
+        return authorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 }

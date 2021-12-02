@@ -1,10 +1,11 @@
 package com.igornoroc.restchat.service;
 
 import com.igornoroc.restchat.entities.Person;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
 
-public interface PersonService {
+public interface PersonService extends UserDetailsService {
 
     void savePerson(Person person);
 

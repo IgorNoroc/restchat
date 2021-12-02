@@ -1,7 +1,7 @@
 package com.igornoroc.restchat.controllers;
 
 import com.igornoroc.restchat.entities.Person;
-import com.igornoroc.restchat.service.impl.PersonServiceImpl;
+import com.igornoroc.restchat.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +14,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class AuthenticationController {
-    private final PersonServiceImpl service;
+public class SingUpController {
+    private final PersonService service;
     private final BCryptPasswordEncoder encoder;
 
     @PostMapping("/registration")

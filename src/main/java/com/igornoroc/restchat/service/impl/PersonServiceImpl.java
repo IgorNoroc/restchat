@@ -4,24 +4,23 @@ import com.igornoroc.restchat.entities.Person;
 import com.igornoroc.restchat.exception.UserNotFoundException;
 import com.igornoroc.restchat.repositories.PersonRepo;
 import com.igornoroc.restchat.service.PersonService;
+import com.igornoroc.restchat.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
-public class PersonServiceImpl implements PersonService, UserDetailsService {
+public class PersonServiceImpl implements PersonService {
     @Value("${DEFAULT_ROLE_ID}")
     private long DEFAULT_ROLE_ID;
     private final PersonRepo personRepo;
-    private final RoleServiceImpl roleService;
+    private final RoleService roleService;
 
     public void savePerson(Person person) {
         if (isNewPerson(person)) {
@@ -78,6 +77,6 @@ public class PersonServiceImpl implements PersonService, UserDetailsService {
         return new User(
                 user.getUsername(),
                 user.getPassword(),
-                new ArrayList<>());
+                user.getRoles());
     }
 }
