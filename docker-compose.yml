@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:10
+    container_name: restchat-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pasword
+      - POSTGRES_DB=restchat
+
+  app:
+    build: ./
+    container_name: restchat
+    ports:
+      - 8080:8080
+
+

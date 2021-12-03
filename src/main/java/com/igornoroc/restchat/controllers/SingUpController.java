@@ -18,7 +18,7 @@ public class SingUpController {
     private final PersonService service;
     private final BCryptPasswordEncoder encoder;
 
-    @PostMapping("/registration")
+    @PostMapping("/singUp")
     public String login(@RequestBody @Valid Person person) {
         person.setPassword(encoder.encode(person.getPassword()));
         service.savePerson(person);
