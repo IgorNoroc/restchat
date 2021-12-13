@@ -15,12 +15,12 @@ public class RoleServiceImpl implements RoleService {
         return roleRepo.save(role);
     }
 
-    public Role findById(long id) {
+    public Role findById(Long id) {
         return roleRepo.findById(id).orElse(null);
     }
 
-    public void delete(Role role) {
-        roleRepo.delete(role);
+    public void delete(Long id) {
+        roleRepo.deleteById(id);
     }
 
     public void deleteAll() {

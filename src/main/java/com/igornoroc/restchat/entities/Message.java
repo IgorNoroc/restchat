@@ -22,4 +22,8 @@ public class Message {
     @JoinColumn(name = "person_id")
     private Person person;
 
+    @PrePersist
+    private void setCreateDate() {
+        created = new Date(System.currentTimeMillis());
+    }
 }

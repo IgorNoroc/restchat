@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +23,6 @@ public class MessageServiceImpl implements MessageService {
     }
 
     public void saveMessage(Message message) {
-        message.setCreated(
-                new Date(System.currentTimeMillis()));
         Person person = personService.findById(message.getPerson().getId());
         person.getMessages().add(message);
         personService.savePerson(person);
@@ -41,8 +38,8 @@ public class MessageServiceImpl implements MessageService {
                 .collect(Collectors.toList());
     }
 
-    public void delete(Message message) {
-        messageRepo.delete(message);
+    public void delete(Long id) {
+        messageRepo.deleteById(id);
     }
 
     public void deleteAll() {

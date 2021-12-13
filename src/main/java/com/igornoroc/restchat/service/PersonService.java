@@ -15,7 +15,9 @@ public interface PersonService extends UserDetailsService {
 
     Person findById(long id);
 
-    void delete(Person person);
+    void setAdminRole(Long personId, Long roleAdminId);
+
+    void delete(Long id);
 
     void deleteAll();
 }

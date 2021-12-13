@@ -11,7 +11,7 @@ public interface MessageService {
 
     void saveMessage(Message message);
 
-    void delete(Message message);
+    void delete(Long id);
 
     void deleteAll();
 }

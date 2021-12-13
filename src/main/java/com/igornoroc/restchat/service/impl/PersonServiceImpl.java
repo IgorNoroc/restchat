@@ -44,8 +44,8 @@ public class PersonServiceImpl implements PersonService {
                                 String.format("person with id: %d not found", id)));
     }
 
-    public void delete(Person person) {
-        personRepo.delete(person);
+    public void delete(Long id) {
+        personRepo.deleteById(id);
     }
 
     public void deleteAll() {
@@ -60,6 +60,14 @@ public class PersonServiceImpl implements PersonService {
     private void setDefaultRole(Person person) {
         person.getRoles().add(
                 roleService.findById(DEFAULT_ROLE_ID));
+    }
+
+    public void setAdminRole(Long personId, Long roleAdminId) {
+        Person findPerson = findById(personId);
+        findPerson.
+                getRoles().add(
+                        roleService.findById(roleAdminId));
+        personRepo.save(findPerson);
     }
 
     private boolean isNewPerson(Person person) {
