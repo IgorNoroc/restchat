@@ -30,7 +30,7 @@ public class PersonController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete{id}")
+    @DeleteMapping("/delete/{id}")
     public void deletePerson(@PathVariable Long id) {
         personService.delete(id);
     }

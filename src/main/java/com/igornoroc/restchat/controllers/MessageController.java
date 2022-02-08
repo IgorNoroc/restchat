@@ -26,7 +26,7 @@ public class MessageController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteMessage(@PathVariable Long id) {
         messageService.delete(id);
     }
